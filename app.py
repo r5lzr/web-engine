@@ -3,8 +3,19 @@ from flask import render_template
 from flask import request
 import chess
 import chess.engine
+import os
+import sys
 
-engine = chess.engine.SimpleEngine.popen_uci(r"./engine/unix/august3")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+if sys.platform.startswith("win"):
+    engine_rel = os.path.join("engine", "windows", "august3.exe")
+else:
+    engine_rel = os.path.join("engine", "unix", "august3")
+
+ENGINE_PATH = os.path.join(BASE_DIR, engine_rel)
+
+engine = chess.engine.SimpleEngine.popen_uci(ENGINE_PATH)
 
 app = Flask(__name__)
 
@@ -30,4 +41,5 @@ def make_move():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, threaded=True)
+    app.run(host="0.0.0.0", debug=True, threaded=True)
+
